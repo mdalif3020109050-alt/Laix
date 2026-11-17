@@ -1,0 +1,1269 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LAI Tutoring Hub - Prio Meye Edition ❤️</title>
+<meta name="description" content="LAI Tutoring - All-in-one Workspace with Multi-Model AI, Verification, Chat PIN & Study Tools.">
+<meta name="theme-color" content="#9333ea">
+<link rel="icon" type="image/jpeg" href="IMG-20261106-WA8446.jpg">
+<link rel="apple-touch-icon" href="IMG-20261106-WA8446.jpg">
+<link rel="canonical" href="https://laitutoring.xyz/">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+:root{
+  --bg: #07050f;
+  --card: rgba(22, 18, 35, 0.78);
+  --glass-border: rgba(255, 255, 255, 0.12);
+  --inp: rgba(255, 255, 255, 0.07);
+  --bd: rgba(255, 255, 255, 0.15);
+  --tx: #f3f0ff;
+  --ac: #a855f7;
+  --ac2: #ec4899;
+  --setBg: rgba(18, 14, 28, 0.98);
+  --chatBubbleBg: rgba(32, 25, 50, 0.88);
+}
+*{box-sizing:border-box;font-family:system-ui}
+html,body{margin:0;padding:0;width:100%;height:100%;background:var(--bg);color:var(--tx);display:flex;justify-content:center;overflow-x:hidden}
+html.light-mode{
+  --bg: #f5f3ff;
+  --card: rgba(255, 255, 255, 0.9);
+  --glass-border: rgba(0, 0, 0, 0.12);
+  --inp: rgba(0, 0, 0, 0.05);
+  --bd: rgba(0, 0, 0, 0.12);
+  --tx: #1f2937;
+  --ac: #9333ea;
+  --ac2: #db2777;
+  --setBg: rgba(255, 255, 255, 0.98);
+  --chatBubbleBg: rgba(243, 232, 255, 0.9);
+}
+
+.app{
+  width:100%;
+  max-width:430px;
+  min-height:100vh;
+  background: var(--card);
+  backdrop-filter: blur(25px);
+  -webkit-backdrop-filter: blur(25px);
+  border-left: 1px solid var(--glass-border);
+  border-right: 1px solid var(--glass-border);
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  padding-bottom:120px;
+}
+
+.top{
+  padding:12px 16px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid var(--bd);
+  background: rgba(25, 18, 40, 0.6);
+  backdrop-filter: blur(15px);
+  position:sticky;
+  top:0;
+  z-index:10;
+}
+.logo{
+  font-weight:800;
+  font-size:16px;
+  background:linear-gradient(135deg,var(--ac),var(--ac2));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  text-align:left;
+}
+.menu-btn{background:none;border:none;color:var(--tx);font-size:22px;cursor:pointer;padding:4px}
+
+/* SIDEBAR */
+.sidebar{
+  position:fixed;
+  top:0;
+  left:-300px;
+  width:280px;
+  height:100%;
+  background:var(--setBg);
+  backdrop-filter: blur(30px);
+  border-right:1px solid var(--glass-border);
+  z-index:100;
+  transition:.3s;
+  display:flex;
+  flex-direction:column;
+  overflow-y:auto;
+  text-align:left;
+  box-shadow:5px 0 25px rgba(0,0,0,0.5);
+}
+.sidebar.open{left:0}
+.sidebar-header{padding:16px 16px 4px 16px;display:flex;justify-content:flex-end;align-items:center}
+.sidebar-close-btn{background:none;border:none;color:var(--tx);font-size:22px;cursor:pointer;opacity:0.8;padding:4px}
+
+.sb-search{margin:8px 16px 16px 16px;padding:10px 14px;background:var(--inp);border:1px solid var(--bd);border-radius:24px;display:flex;gap:10px;align-items:center}
+.sb-search input{flex:1;background:none;border:none;color:var(--tx);outline:none;font-size:14px}
+.sb-new{margin:0 16px 12px 16px}
+.sb-new-btn{width:100%;padding:10px 16px;background:var(--inp);border:1px solid var(--bd);color:var(--tx);font-size:14px;cursor:pointer;display:flex;gap:10px;align-items:center;border-radius:20px;font-weight:600}
+.sb-menu-item{padding:12px 16px;display:flex;align-items:center;gap:12px;color:var(--tx);font-size:14px;cursor:pointer;border-bottom:1px solid var(--bd);transition:0.2s}
+.sb-menu-item:hover{background:rgba(168,85,247,0.1)}
+
+.center-hero{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:24px 20px 80px 20px;text-align:center}
+.seamless-orb{
+  width:110px;
+  height:110px;
+  border-radius:28px;
+  background:radial-gradient(circle at 35% 35%, #ec4899, #a855f7, #3b82f6);
+  box-shadow:0 0 45px rgba(168,85,247,0.85);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  animation:float 4s ease-in-out infinite;
+  border:3px solid #f472b6;
+}
+.seamless-orb img{width:100%;height:100%;border-radius:25px;object-fit:cover}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+
+/* AGE GROUP TABS */
+.age-tabs{display:flex;gap:6px;width:100%;overflow-x:auto;padding:4px 0;margin-bottom:8px}
+.age-tabs::-webkit-scrollbar{display:none}
+.age-tab{background:var(--inp);border:1px solid var(--bd);color:var(--tx);font-size:11px;font-weight:700;padding:6px 12px;border-radius:14px;cursor:pointer;white-space:nowrap;flex-shrink:0;transition:0.2s}
+.age-tab.active{background:var(--ac);color:#fff;border-color:var(--ac)}
+
+.top-chat-bar-container{
+  position:sticky;
+  top:57px;
+  z-index:9;
+  background: rgba(15, 10, 25, 0.6);
+  backdrop-filter: blur(15px);
+  padding:8px 12px;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  width:100%;
+  border-bottom: 1px solid var(--bd);
+}
+.bottom-chat-bar{width:100%;max-width:410px;background:var(--card);border:1px solid var(--bd);border-radius:24px;padding:8px 12px;display:flex;align-items:center;gap:8px;box-shadow:0 4px 15px rgba(0,0,0,0.5)}
+.bottom-chat-bar input{flex:1;background:none;border:none;color:var(--tx);outline:none;font-size:13px;min-width:60px}
+
+.toolbar-icon-btn{background:none;border:none;color:var(--ac);font-size:18px;cursor:pointer;display:flex;align-items:center;justify-content:center;padding:2px;flex-shrink:0}
+
+/* FULL SCREEN AUTH PAGES */
+.full-screen-auth{
+  position:fixed;
+  top:0;
+  left:0;
+  width:100vw;
+  height:100vh;
+  background:var(--setBg);
+  z-index:500;
+  display:none;
+  flex-direction:column;
+  padding:28px;
+  overflow-y:auto;
+  align-items:center;
+}
+.full-screen-auth.on{display:flex}
+.auth-content-box{width:100%;max-width:420px;margin-top:20px}
+
+/* GEMINI STYLE BOTTOM SHEET */
+.gemini-sheet{position:fixed;bottom:-100%;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--card);backdrop-filter: blur(30px);border-top:1px solid var(--bd);border-radius:28px 28px 0 0;padding:24px;z-index:250;transition:.3s ease-in-out;max-height:75vh;overflow-y:auto}
+.gemini-sheet.open{bottom:0}
+.sheet-handle{width:40px;height:4px;background:var(--bd);border-radius:10px;margin:0 auto 16px}
+.sheet-menu-item{display:flex;align-items:center;gap:14px;padding:12px 14px;border-radius:14px;cursor:pointer;transition:0.2s;margin-bottom:6px;background:var(--inp);border:1px solid var(--bd)}
+.sheet-menu-item:hover{background:rgba(168,85,247,0.1)}
+.sheet-menu-icon{font-size:22px;width:32px;text-align:center}
+.sheet-menu-title{font-size:14px;font-weight:700;color:var(--tx)}
+.sheet-menu-sub{font-size:11px;opacity:0.6;color:var(--tx);margin-top:2px}
+
+/* VOICE OVERLAY */
+.voice-overlay{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:rgba(20,15,30,0.98);border-top:2px solid var(--ac);border-radius:32px 32px 0 0;padding:36px;z-index:600;display:none;flex-direction:column;align-items:center;gap:20px}
+.voice-overlay.on{display:flex}
+.voice-mic-circle{width:84px;height:84px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--ac2));display:flex;align-items:center;justify-content:center;font-size:38px;color:#fff;cursor:pointer}
+
+.modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,.9);display:none;z-index:300;overflow-y:auto;justify-content:center;align-items:center}
+.modal.on{display:flex}
+.settings-modal{background:var(--setBg);backdrop-filter: blur(30px);width:100%;height:100%;max-width:430px;position:relative;display:flex;flex-direction:column;overflow-y:auto}
+
+.profile-card{width:94%;max-width:420px;background:var(--card);backdrop-filter: blur(20px);border:1px solid var(--bd);border-radius:24px;padding:24px;margin:20px auto;text-align:left}
+.profile-header-box{display:flex;flex-direction:column;align-items:center;text-align:center;padding-bottom:16px;border-bottom:1px solid var(--bd);margin-bottom:16px}
+.profile-avatar{width:76px;height:76px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--ac2));display:flex;align-items:center;justify-content:center;font-size:32px;font-weight:900;color:#fff;margin-bottom:10px;object-fit:cover;overflow:hidden}
+.manage-google-btn{background:var(--inp);border:1px solid var(--bd);color:var(--tx);font-size:12px;font-weight:700;padding:8px 16px;border-radius:20px;cursor:pointer;margin-top:10px;transition:0.2s}
+.manage-google-btn:hover{background:rgba(168,85,247,0.15);border-color:var(--ac)}
+
+.account-list{display:flex;flex-direction:column;gap:8px;max-height:160px;overflow-y:auto;margin-bottom:12px}
+.account-item{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:var(--inp);border:1px solid var(--bd);border-radius:14px;cursor:pointer;transition:0.2s}
+.account-item:hover{border-color:var(--ac)}
+
+.add-account-btn{display:flex;align-items:center;gap:12px;padding:10px 12px;background:var(--inp);border:1px dashed var(--ac);border-radius:14px;cursor:pointer;color:var(--ac);font-weight:700;font-size:13px;justify-content:center;margin-bottom:16px;transition:0.2s}
+.add-account-btn:hover{background:rgba(168,85,247,0.1)}
+
+.i{width:100%;background:var(--inp);border:1px solid var(--bd);border-radius:14px;padding:16px;color:var(--tx);outline:none;margin:8px 0;font-size:14px}
+.custom-select{width:100%;background:var(--inp);border:1px solid var(--bd);border-radius:14px;padding:16px;color:var(--tx);outline:none;margin:8px 0;font-size:14px;appearance:none;cursor:pointer}
+.bt{width:100%;background:linear-gradient(135deg,var(--ac),var(--ac2));border:none;padding:16px;border-radius:14px;color:#fff;font-weight:700;font-size:15px;cursor:pointer;margin-top:12px}
+.auth-step{display:none;width:100%}.auth-step.on{display:block}
+.msg-user{background:linear-gradient(135deg,var(--ac),var(--ac2));padding:14px 18px;border-radius:18px;margin-left:auto;max-width:85%;color:#fff;text-align:left;font-size:14px}
+.msg-ai{background:var(--chatBubbleBg);backdrop-filter: blur(15px);border:1px solid var(--bd);padding:14px 18px;border-radius:18px;max-width:90%;display:flex;flex-direction:column;gap:10px;text-align:left;font-size:14px}
+</style>
+</head>
+<body>
+<div class="app">
+<div class="top">
+  <div style="display:flex;align-items:center;gap:8px">
+    <button class="menu-btn" onclick="toggleSidebar(true)">☰</button>
+    <img src="IMG-20261106-WA8446.jpg" style="width:28px;height:28px;border-radius:8px;border:1px solid #f472b6;object-fit:cover" alt="Logo">
+    <div class="logo">LAI Tutoring Hub ❤️ Prio Meye</div>
+  </div>
+  <div style="display:flex;gap:6px;align-items:center">
+    <div style="background:var(--inp);border:1px solid var(--bd);padding:4px 8px;border-radius:10px;font-size:10px;font-weight:700;color:var(--ac);white-space:nowrap">
+      💎 <span id="headerPoints">0</span> | 🔥 <span id="headerStreak">1</span>d
+    </div>
+    <!-- ACCOUNT / PROFILE BADGE BUTTON -->
+    <div id="topAccountBadge" style="width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,var(--ac),var(--ac2));color:#fff;display:flex;justify-content:center;align-items:center;cursor:pointer;position:relative;font-weight:900;font-size:14px;box-shadow:0 4px 12px rgba(168,85,247,0.4)" onclick="handleProfileClick()" title="Account & Profile">
+      <span id="topAccountLetter">A</span>
+      <span id="loginDot" style="position:absolute;bottom:0px;right:0px;width:8px;height:8px;background:#00ff88;border-radius:50%;border:2px solid var(--card);display:none"></span>
+    </div>
+  </div>
+</div>
+
+<!-- SIDEBAR -->
+<div class="sidebar" id="sidebar">
+  <div class="sidebar-header">
+    <button class="sidebar-close-btn" onclick="toggleSidebar(false)">✕</button>
+  </div>
+  <div class="sb-search"><span>🔍</span><input id="searchInput" placeholder="Search chats..." oninput="filterChats(this.value)"></div>
+  <div class="sb-new">
+    <button class="sb-new-btn" onclick="startNewChat()"><span>✏️</span> New Session</button>
+  </div>
+
+  <!-- My Stuff Button -->
+  <div class="sb-menu-item" onclick="triggerMyStuffHub(); toggleSidebar(false);">
+    <span class="sheet-menu-icon">📦</span>
+    <div><div class="sheet-menu-title">My Stuff</div><div class="sheet-menu-sub">Saved study files & materials</div></div>
+  </div>
+
+  <!-- Live Bro Gateway -->
+  <div class="sb-menu-item" onclick="openFullScreenAuth('login'); toggleSidebar(false);">
+    <span class="sheet-menu-icon">🔐</span>
+    <div><div class="sheet-menu-title">Live Bro ID Gateway</div><div class="sheet-menu-sub">Full Screen Sign In</div></div>
+  </div>
+
+  <div class="sb-menu-item" onclick="openFullScreenAuth('category'); toggleSidebar(false);">
+    <span class="sheet-menu-icon">✨</span>
+    <div><div class="sheet-menu-title">Create Live Bro Account</div><div class="sheet-menu-sub">Join the Ecosystem</div></div>
+  </div>
+
+  <!-- Settings Button -->
+  <div class="sb-menu-item" onclick="openSettingsMain(); toggleSidebar(false);">
+    <span class="sheet-menu-icon">⚙️</span>
+    <div><div class="sheet-menu-title">Settings & Account</div><div class="sheet-menu-sub">Theme, custom color, pin & data center</div></div>
+  </div>
+
+  <div style="padding:12px 16px 6px 16px;font-size:11px;opacity:0.5;letter-spacing:1px;text-transform:uppercase;font-weight:700">Recent Engagement</div>
+  <div id="historyList" style="flex:1"></div>
+  <div class="sb-bottom" style="border-top:1px solid var(--bd);padding:12px;background:var(--card)">
+    <div class="sb-menu-item" style="border:none;padding:8px 12px;color:#ff8a80;border-radius:8px" onclick="clearAllChats()">
+      <span>🗑️</span><span style="color:#ff8a80;font-weight:500">Clear History</span>
+    </div>
+  </div>
+</div>
+
+<!-- CLEANED TOP CHAT BAR WITH MODEL SELECTOR -->
+<div class="top-chat-bar-container">
+  <div style="padding: 4px 12px; background: var(--inp); display: flex; justify-content: space-between; align-items: center; font-size: 11px; width: 100%; border-bottom: 1px solid var(--bd);">
+    <span>🤖 Engine: <b id="activeModelDisplay" style="color: var(--ac);">Gemini 3.5 Flash</b></span>
+    <select id="modelSelector" onchange="changeAIModel(this.value)" style="background: var(--card); color: var(--tx); border: 1px solid var(--bd); padding: 2px 6px; border-radius: 6px; outline: none; font-size: 11px;">
+      <option value="Gemini 3.5 Flash">Gemini 3.5 Flash</option>
+      <option value="Claude 3.5 Sonnet">Claude 3.5 Sonnet</option>
+      <option value="ChatGPT-4o">ChatGPT-4o</option>
+      <option value="LAI Swarm Hybrid">LAI Swarm Hybrid</option>
+    </select>
+  </div>
+
+  <div class="age-tabs" style="padding: 4px 12px;">
+    <div class="age-tab active" onclick="setAgeGroup('all', this)">👶👵 All Ages</div>
+    <div class="age-tab" onclick="setAgeGroup('kids', this)">🎨 Kids (4-10)</div>
+    <div class="age-tab" onclick="setAgeGroup('teens', this)">🚀 Teens (11-20)</div>
+    <div class="age-tab" onclick="setAgeGroup('adults', this)">💼 Adults (21-50)</div>
+    <div class="age-tab" onclick="setAgeGroup('seniors', this)">☕ Seniors (50+)</div>
+  </div>
+
+  <div class="bottom-chat-bar">
+    <button class="toolbar-icon-btn" onclick="toggleSheet(true)" title="Upload Image or File">➕</button>
+    <button class="toolbar-icon-btn" onclick="openGeminiToolsSheet()" title="Feature Hub Menu">🛠️</button>
+    
+    <input id="qInput" placeholder="Ask LAI study assistant for my prio meye ❤️..." onkeydown="if(event.key==='Enter') askAI()">
+    <button onclick="startVoiceTyping()" class="toolbar-icon-btn" title="Voice Typing">🎤</button>
+    <button onclick="askAI()" style="background:linear-gradient(135deg,var(--ac),var(--ac2));border:none;width:32px;height:32px;border-radius:10px;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;" title="Send">✨</button>
+  </div>
+</div>
+
+<div class="center-hero" id="homeView">
+  <div class="seamless-orb"><img src="IMG-20261106-WA8446.jpg" alt="Logo"></div>
+  <h2 id="homeTitle" style="margin:24px 0 10px 0;font-weight:300;font-size:24px">Prio Meye Special Workspace ❤️</h2>
+  <p id="homeSub" style="opacity:0.6;font-size:13px;line-height:18px">Beautiful custom gradient theme, AI study assistant & dedicated memories for my prio meye</p>
+</div>
+
+<div id="chatBox" style="padding:16px;display:flex;flex-direction:column;gap:16px;z-index:2"></div>
+
+<!-- UNIQUE PROTOCOL LOADER (FULL SCREEN) -->
+<div id="uniqueCheckingModal" class="full-screen-auth" style="justify-content:center;z-index:999;background:var(--bg)">
+  <div style="display:flex;flex-direction:column;align-items:center">
+    <div class="unique-loader" style="width:64px;height:64px;border:4px solid var(--inp);border-top-color:var(--ac2);border-right-color:var(--ac);border-radius:50%;animation:spinUnique 0.9s cubic-bezier(0.68, -0.55, 0.27, 1.55) infinite;margin-bottom:20px"></div>
+    <div style="font-size:18px;font-weight:700;letter-spacing:1px;color:var(--tx)">VERIFYING LIVE BRO PROTOCOL...</div>
+  </div>
+</div>
+<style>
+@keyframes spinUnique{0%{transform:rotate(0deg)}100%{transform:rotate(360deg)}}
+</style>
+
+<!-- FULL SCREEN AUTHENTICATION & REGISTRATION FLOW (LIVE BRO ECOSYSTEM) -->
+<div id="fullScreenAuthModal" class="full-screen-auth">
+  <div style="width:100%;max-width:420px;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;padding-top:10px">
+    <div style="font-weight:900;font-size:22px;background:linear-gradient(135deg,var(--ac),var(--ac2));-webkit-background-clip:text;-webkit-text-fill-color:transparent">Live Bro Sovereign Portal</div>
+    <button onclick="closeFullScreenAuth()" style="background:var(--inp);border:1px solid var(--bd);color:var(--tx);width:40px;height:40px;border-radius:50%;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center">✕</button>
+  </div>
+
+  <div class="auth-content-box">
+    <!-- LOGIN STEP -->
+    <div id="stepLogin" class="auth-step on">
+      <div style="font-size:24px;font-weight:700;margin-bottom:8px">Welcome Back</div>
+      <div style="opacity:0.6;font-size:14px;margin-bottom:28px">Sign in with your Live Bro ID to access all ecosystem services.</div>
+      <input id="inputLoginId" class="i" placeholder="Live Bro ID (e.g. user@livebro.com)">
+      <input id="inputLoginPass" type="password" class="i" placeholder="Security Password">
+      <button class="bt" onclick="executeLogin()">Sign In</button>
+      <div style="text-align:center;margin-top:28px;font-size:15px">
+        <span>Don't have an account?</span> <span style="color:var(--ac);cursor:pointer;font-weight:700" onclick="switchStep('category')">Create Account</span>
+      </div>
+    </div>
+
+    <!-- STEP 1: CATEGORY SELECTION -->
+    <div id="stepCategory" class="auth-step">
+      <div style="font-size:24px;font-weight:700;margin-bottom:8px">Account Type</div>
+      <div style="opacity:0.6;font-size:14px;margin-bottom:28px">Choose the category that best fits your usage.</div>
+      <div style="display:flex;flex-direction:column;gap:16px">
+        <button class="bt" style="margin-top:0;text-align:left;padding:24px;border-radius:20px" onclick="setCategory('Personal')">
+          <div style="font-size:20px;margin-bottom:4px">👤 Personal</div>
+          <div style="font-size:13px;opacity:0.8;font-weight:normal">For individual learning, study assistants, and personal workspace.</div>
+        </button>
+        <button class="bt" style="margin-top:0;text-align:left;padding:24px;border-radius:20px;background:var(--inp);color:var(--tx);border:1px solid var(--bd)" onclick="setCategory('Business')">
+          <div style="font-size:20px;margin-bottom:4px">💼 Business</div>
+          <div style="font-size:13px;opacity:0.8;font-weight:normal">For enterprise tools, team collaboration, and workspace management.</div>
+        </button>
+      </div>
+    </div>
+
+    <!-- STEP 2: NAME -->
+    <div id="stepName" class="auth-step">
+      <div style="font-size:24px;font-weight:700;margin-bottom:8px">What's your name?</div>
+      <div style="opacity:0.6;font-size:14px;margin-bottom:28px">We'll use this to personalize your Live Bro experience.</div>
+      <input id="regFirstName" class="i" placeholder="First Name" oninput="generateIdSuggestions(this.value)">
+      <input id="regLastName" class="i" placeholder="Last Name">
+      <button class="bt" onclick="proceedFromName()">Next</button>
+    </div>
+
+    <!-- STEP 3: DOB & GENDER -->
+    <div id="stepDob" class="auth-step">
+      <div style="font-size:24px;font-weight:700;margin-bottom:8px">Basic Information</div>
+      <div style="opacity:0.6;font-size:14px;margin-bottom:28px">Select your birth details and gender.</div>
+      
+      <div style="font-size:14px;font-weight:600;margin-bottom:4px">Date of Birth</div>
+      <div style="display:flex;gap:8px">
+        <!-- Month Dropdown -->
+        <select id="regMonthSelect" class="custom-select" style="margin-top:0;width:40%">
+          <option value="">Month</option>
+          <option value="January">January</option>
+          <option value="February">February</option>
+          <option value="March">March</option>
+          <option value="April">April</option>
+          <option value="May">May</option>
+          <option value="June">June</option>
+          <option value="July">July</option>
+          <option value="August">August</option>
+          <option value="September">September</option>
+          <option value="October">October</option>
+          <option value="November">November</option>
+          <option value="December">December</option>
+        </select>
+        <!-- Day Dropdown (1-31) -->
+        <select id="regDaySelect" class="custom-select" style="margin-top:0;width:30%">
+          <option value="">Day</option>
+        </select>
+        <!-- Year Input -->
+        <input id="regYearInput" class="i" placeholder="YYYY" style="margin-top:0;width:30%" maxlength="4">
+      </div>
+
+      <div style="font-size:14px;font-weight:600;margin-top:16px;margin-bottom:4px">Gender</div>
+      <select id="regGender" class="custom-select" style="margin-top:0">
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
+      </select>
+      <button class="bt" onclick="proceedFromDob()">Next</button>
+    </div>
+
+    <!-- STEP 4: CUSTOM ID (@livebro.com) WITH DEFAULT SUGGESTIONS -->
+    <div id="stepId" class="auth-step">
+      <div style="font-size:24px;font-weight:700;margin-bottom:8px">Create Live Bro ID</div>
+      <div style="opacity:0.6;font-size:14px;margin-bottom:20px">Choose from default suggestions or enter your custom ID.</div>
+      
+      <!-- Default Suggestions Container -->
+      <div style="margin-bottom:14px">
+        <div style="font-size:12px;opacity:0.7;margin-bottom:6px;font-weight:700">Recommended IDs:</div>
+        <div id="defaultIdSuggestionsBox" style="display:flex;flex-direction:column;gap:6px"></div>
+      </div>
+
+      <div style="position:relative;display:flex;align-items:center">
+        <input id="regCustomId" class="i" placeholder="custom_username" style="padding-right:120px">
+        <div style="position:absolute;right:16px;font-size:14px;opacity:0.6;pointer-events:none">@livebro.com</div>
+      </div>
+      <button class="bt" onclick="proceedFromId()">Next</button>
+    </div>
+
+    <!-- STEP 5: PASSWORD (6-8 chars) -->
+    <div id="stepPassword" class="auth-step">
+      <div style="font-size:24px;font-weight:700;margin-bottom:8px">Secure Your Account</div>
+      <div style="opacity:0.6;font-size:14px;margin-bottom:28px">Create a strong password between 6 to 8 characters.</div>
+      <input id="regPass" type="password" maxlength="8" class="i" placeholder="Password (6-8 characters)">
+      <button class="bt" onclick="proceedFromPassword()">Next</button>
+    </div>
+
+    <!-- STEP 6: GMAIL BINDING -->
+    <div id="stepGmail" class="auth-step">
+      <div style="font-size:24px;font-weight:700;margin-bottom:8px">Account Recovery</div>
+      <div style="opacity:0.6;font-size:14px;margin-bottom:28px">Add a backup email for account recovery if you lose access.</div>
+      <input id="regGmail" class="i" placeholder="your-email@gmail.com (Optional)">
+      <button class="bt" onclick="proceedFromGmail()">Continue</button>
+    </div>
+
+    <!-- STEP 7: TERMS & CONDITIONS -->
+    <div id="stepTnc" class="auth-step">
+      <div style="font-size:24px;font-weight:700;margin-bottom:8px">Terms of Service</div>
+      <div style="opacity:0.6;font-size:14px;margin-bottom:28px">Please agree to our ecosystem protocol to proceed.</div>
+      <div style="font-size:13px;opacity:0.8;background:var(--inp);padding:20px;border-radius:20px;border:1px solid var(--bd);max-height:180px;overflow-y:auto;text-align:left;line-height:20px;margin-bottom:24px">
+        By activating your Live Bro ID, you agree to comply with all community guidelines and security protocols. Your data is encrypted and managed under strict privacy standards.
+      </div>
+      <div style="display:flex;align-items:center;gap:12px;font-size:15px;margin-bottom:28px;cursor:pointer" onclick="document.getElementById('tncAgree').click()">
+        <input type="checkbox" id="tncAgree" style="accent-color:var(--ac);width:20px;height:20px;cursor:pointer">
+        <label for="tncAgree" style="cursor:pointer">I agree to the Live Bro Terms</label>
+      </div>
+      <button class="bt" style="padding:20px;font-size:18px" onclick="finalizeAccountRegistration()">Complete Activation</button>
+    </div>
+  </div>
+</div>
+
+<!-- GEMINI STYLE TOOLS BOTTOM SHEET -->
+<div class="gemini-sheet" id="geminiToolsSheet">
+  <div class="sheet-handle"></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px">
+    <div style="font-weight:800;font-size:16px;color:var(--ac)">🛠️ Feature Hub</div>
+    <button onclick="closeGeminiToolsSheet()" style="background:none;border:none;color:var(--tx);font-size:20px;cursor:pointer">✕</button>
+  </div>
+  <div style="display:flex;flex-direction:column;gap:6px">
+    <div class="sheet-menu-item" onclick="closeGeminiToolsSheet(); executeToolbarTool('translator');">
+      <span class="sheet-menu-icon">🌐</span><div><div class="sheet-menu-title">Live Language Translator</div><div class="sheet-menu-sub">Real-time multi-language voice & text translation</div></div>
+    </div>
+    <div class="sheet-menu-item" onclick="closeGeminiToolsSheet(); executeToolbarTool('scanner');">
+      <span class="sheet-menu-icon">📷</span><div><div class="sheet-menu-title">AR Object Scanner</div><div class="sheet-menu-sub">Scan objects, formulas & books instantly</div></div>
+    </div>
+    <div class="sheet-menu-item" onclick="closeGeminiToolsSheet(); openWeatherModal();">
+      <span class="sheet-menu-icon">🌧️</span><div><div class="sheet-menu-title">Weather & Air Quality</div><div class="sheet-menu-sub">Live rain radar & AQI updates</div></div>
+    </div>
+    <div class="sheet-menu-item" onclick="closeGeminiToolsSheet(); executeToolbarTool('quran');">
+      <span class="sheet-menu-icon">📖</span><div><div class="sheet-menu-title">Quran 114 Surah Audio Hub</div><div class="sheet-menu-sub">Recitation & translation directory</div></div>
+    </div>
+    <div class="sheet-menu-item" onclick="closeGeminiToolsSheet(); executeToolbarTool('quiz');">
+      <span class="sheet-menu-icon">📝</span><div><div class="sheet-menu-title">Advanced Quiz & Study Hub</div><div class="sheet-menu-sub">All-age interactive test modules</div></div>
+    </div>
+    <div class="sheet-menu-item" onclick="closeGeminiToolsSheet(); executeToolbarTool('story');">
+      <span class="sheet-menu-icon">✍️</span><div><div class="sheet-menu-title">Story & Learning Hub</div><div class="sheet-menu-sub">Engaging educational content</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PREVIEW -->
+<div id="previewContainer" style="display:none;position:fixed;bottom:25px;left:50%;transform:translateX(-50%);width:92%;max-width:410px;background:var(--card);backdrop-filter: blur(20px);border:1px solid var(--bd);border-radius:16px;padding:8px 12px;z-index:98;box-shadow:0 5px 20px rgba(0,0,0,0.5)">
+  <div style="display:flex;align-items:center;justify-content:space-between">
+    <div style="display:flex;align-items:center;gap:10px">
+      <img id="previewImg" src="" style="width:36px;height:36px;border-radius:8px;object-fit:cover">
+      <span style="font-size:12px;opacity:0.8" id="previewFileName">File Selected</span>
+    </div>
+    <button onclick="clearImagePreview()" style="background:none;border:none;color:#ff8a80;font-size:16px;cursor:pointer">✕</button>
+  </div>
+</div>
+
+<!-- VOICE OVERLAY -->
+<div class="voice-overlay" id="voiceOverlay">
+  <div style="font-weight:700;font-size:18px;color:var(--ac)" id="voiceStatusText">Listening... Speak now</div>
+  <div class="voice-mic-circle" onclick="stopVoiceTyping()">🎤</div>
+  <div style="font-size:13px;opacity:0.7">Click to stop</div>
+</div>
+
+<!-- WEATHER MODAL -->
+<div id="weatherModal" class="modal">
+  <div style="width:94%;max-width:420px;background:var(--card);backdrop-filter: blur(20px);border:1px solid var(--bd);border-radius:24px;padding:24px;text-align:left">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <div style="font-weight:800;font-size:18px;color:var(--ac)">🌧️ Weather & Air Quality</div>
+      <button onclick="closeWeatherModal()" style="background:none;border:none;color:var(--tx);font-size:22px;cursor:pointer">✕</button>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:12px;font-size:14px">
+      <div style="background:var(--inp);padding:14px;border-radius:14px;border:1px solid var(--bd)">
+        <div style="font-weight:700;color:var(--ac);margin-bottom:4px">📍 Dhaka (Banshal)</div>
+        <div>• Temperature: <b>28°C (Partly Cloudy)</b></div>
+        <div>• Rainfall Chance: <b>65% (Rain expected)</b></div>
+        <div>• Wind Speed: <b>14 km/h (South Wind)</b></div>
+        <div>• Air Quality Index (AQI): <b>112 (Moderate)</b></div>
+      </div>
+      <button class="bt" onclick="closeWeatherModal()">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- UPLOAD SHEET -->
+<div class="gemini-sheet" id="bottomSheet">
+  <div class="sheet-handle"></div>
+  <div style="font-weight:700;margin-bottom:16px;font-size:16px;text-align:center">Upload Image or File</div>
+  <div style="display:flex;gap:16px;overflow-x:auto;justify-content:center">
+    <div onclick="triggerCam()" style="min-width:90px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer"><div style="width:56px;height:56px;border-radius:50%;background:var(--inp);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:24px">📷</div><span style="font-size:12px">Camera</span></div>
+    <div onclick="triggerGal()" style="min-width:90px;display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer"><div style="width:56px;height:56px;border-radius:50%;background:var(--inp);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-size:24px">🖼️</div><span style="font-size:12px">Gallery</span></div>
+  </div>
+</div>
+
+<!-- PROFILE MODAL WITH ENHANCED FEATURES -->
+<div id="profileModal" class="modal">
+  <div class="profile-card">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px">
+      <div style="font-weight:800;font-size:16px">👤 Prio Meye Account Hub</div>
+      <button onclick="closeProfile()" style="background:none;border:none;color:var(--tx);font-size:22px;cursor:pointer">✕</button>
+    </div>
+    
+    <div class="profile-header-box">
+      <div class="profile-avatar" id="profileAvatar">A</div>
+      <div style="font-weight:800;font-size:17px" id="profileNameDisplay">User Name</div>
+      <div style="font-size:13px;opacity:0.6;margin-top:2px" id="profileEmailDisplay">user@email.com</div>
+      <div style="display:flex;gap:8px;margin-top:10px">
+        <button class="manage-google-btn" onclick="openManageAccountSettings()">Manage Profile</button>
+        <button class="manage-google-btn" onclick="openSettingsMain(); closeProfile();">⚙️ Advanced Settings</button>
+      </div>
+    </div>
+
+    <!-- ENHANCED FEATURES SECTION IN PROFILE HUB -->
+    <div style="font-size:12px;opacity:0.7;margin-bottom:6px;font-weight:800;color:var(--ac)">⚡ Quick Workspace Features:</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-bottom:14px">
+      <div onclick="closeProfile(); triggerMyStuffHub();" style="background:var(--inp);padding:10px;border-radius:10px;border:1px solid var(--bd);cursor:pointer;font-size:12px;text-align:center">📦 My Stuff</div>
+      <div onclick="closeProfile(); openWeatherModal();" style="background:var(--inp);padding:10px;border-radius:10px;border:1px solid var(--bd);cursor:pointer;font-size:12px;text-align:center">🌧️ Weather & AQI</div>
+      <div onclick="closeProfile(); executeToolbarTool('translator');" style="background:var(--inp);padding:10px;border-radius:10px;border:1px solid var(--bd);cursor:pointer;font-size:12px;text-align:center">🌐 Translator</div>
+      <div onclick="closeProfile(); executeToolbarTool('quiz');" style="background:var(--inp);padding:10px;border-radius:10px;border:1px solid var(--bd);cursor:pointer;font-size:12px;text-align:center">📝 Quiz Hub</div>
+    </div>
+
+    <div style="font-size:12px;opacity:0.6;margin-bottom:8px;font-weight:700">Linked Accounts (Switch Easily):</div>
+    <div class="account-list" id="linkedAccountsList"></div>
+
+    <div class="add-account-btn" onclick="openAddAnotherAccount()">
+      <span>➕</span> Add Another Account
+    </div>
+
+    <button class="bt" style="background:#2a1212;border:1px solid #ff8a80;color:#ff8a80;margin-top:4px" onclick="doLogout()">Sign Out All Accounts</button>
+  </div>
+</div>
+
+<!-- MANAGE ACCOUNT SETTINGS MODAL -->
+<div id="manageAccountModal" class="modal">
+  <div style="width:94%;max-width:420px;background:var(--card);backdrop-filter: blur(20px);border:1px solid var(--bd);border-radius:24px;padding:24px">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:18px">
+      <div style="font-weight:800;font-size:16px;color:var(--ac)">⚙️ Manage Profile & Name</div>
+      <button onclick="closeManageAccountSettings()" style="background:none;border:none;color:var(--tx);font-size:22px;cursor:pointer">✕</button>
+    </div>
+    <div style="font-size:13px;opacity:0.7;margin-bottom:8px">Update Display Name:</div>
+    <input id="updateNameInput" class="i" placeholder="Enter new name...">
+    <div style="font-size:13px;opacity:0.7;margin-top:12px;margin-bottom:8px">Change Profile Logo URL:</div>
+    <input id="updateAvatarInput" class="i" placeholder="Paste image URL..." oninput="previewEditAvatar(this.value)">
+    <div style="display:flex;justify-content:center;margin:12px 0">
+      <div id="editAvatarPreviewBox" style="width:60px;height:60px;border-radius:50%;background:var(--inp);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;overflow:hidden">👤</div>
+    </div>
+    <button class="bt" onclick="saveAccountChanges()">Save Changes</button>
+  </div>
+</div>
+
+<!-- SETTINGS MODAL -->
+<div id="settingsModal" class="modal">
+  <div class="settings-modal">
+    <div class="settings-header" style="padding:20px;display:flex;align-items:center;gap:16px;background:var(--setBg);position:sticky;top:0;z-index:10;border-bottom:1px solid var(--bd)">
+      <button id="settingsBackBtn" onclick="openSettingsMain()" style="background:none;border:none;color:var(--tx);font-size:28px;cursor:pointer;display:none">←</button>
+      <button id="settingsCloseBtn" onclick="toggleSettings(false)" style="background:none;border:none;color:var(--tx);font-size:28px;cursor:pointer">✕</button>
+      <div id="settingsHeaderTitle" style="font-size:18px;font-weight:700;margin-left:8px">LAI সেটিংস</div>
+    </div>
+
+    <div id="settingsMainView" style="display:block;padding-bottom:40px">
+      <div class="settings-title" style="font-size:24px;font-weight:800;margin:24px 20px 6px 20px;color:var(--tx)">সেটিংস ক্যাটালগ</div>
+      <div class="settings-subtitle" style="font-size:13px;opacity:0.6;margin:0 20px 24px 20px;color:var(--tx)">ডিসপ্লে, কাস্টম থিম, মাল্টি-মডেল এআই, অ্যাকাউন্ট, সিকিউরিটি ও হেল্প সেন্টার।</div>
+      
+      <!-- SETTINGS SUB-MENU: AI ENGINE -->
+      <div class="settings-section-title" style="padding:16px 20px 8px 20px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ac);font-weight:800;border-left:4px solid var(--ac);margin-top:12px;background:rgba(168,85,247,0.08)">0. AI Engine Default Routing</div>
+      <div style="padding: 16px 20px; border-bottom: 1px solid var(--bd);">
+        <div style="font-weight: 700; font-size: 14px; margin-bottom: 8px; color: var(--tx);">⚡ Select Default AI Engine</div>
+        <select id="settingsModelSelector" onchange="changeAIModel(this.value)" style="width: 100%; padding: 12px; background: var(--inp); color: var(--tx); border: 1px solid var(--bd); border-radius: 10px; outline: none;">
+          <option value="Gemini 3.5 Flash">Gemini 3.5 Flash (Google)</option>
+          <option value="Claude 3.5 Sonnet">Claude 3.5 Sonnet (Anthropic)</option>
+          <option value="ChatGPT-4o">ChatGPT-4o (OpenAI)</option>
+          <option value="LAI Swarm Hybrid">LAI Swarm Hybrid (Neural)</option>
+        </select>
+      </div>
+
+      <div class="settings-section-title" style="padding:16px 20px 8px 20px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ac);font-weight:800;border-left:4px solid var(--ac);margin-top:12px;background:rgba(168,85,247,0.08)">1. Account & Profile</div>
+      <div class="settings-item" onclick="openSettingsSub('account')" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--bd);cursor:pointer">
+        <div class="settings-item-left" style="display:flex;align-items:center;gap:16px"><span class="settings-item-icon" style="font-size:20px;width:28px;text-align:center">👤</span><div><div class="settings-item-main" style="font-size:15px;font-weight:600;color:var(--tx)">LAI Tutoring Account Manage</div><div class="settings-item-sub" style="font-size:12px;opacity:0.6;color:var(--tx);margin-top:4px">নাম, প্রোফাইল পিকচার ও তথ্য আপডেট</div></div></div>
+        <span style="opacity:0.4;font-size:20px">›</span>
+      </div>
+
+      <div class="settings-section-title" style="padding:16px 20px 8px 20px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ac);font-weight:800;border-left:4px solid var(--ac);margin-top:12px;background:rgba(168,85,247,0.08)">2. Display & Custom Themes</div>
+      <div class="settings-item" onclick="openSettingsSub('display')" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--bd);cursor:pointer">
+        <div class="settings-item-left" style="display:flex;align-items:center;gap:16px"><span class="settings-item-icon" style="font-size:20px;width:28px;text-align:center">🎨</span><div><div class="settings-item-main" style="font-size:15px;font-weight:600;color:var(--tx)">Dark/Light Mode & Custom Themes</div><div class="settings-item-sub" style="font-size:12px;opacity:0.6;color:var(--tx);margin-top:4px">কাস্টম কালার ও নিজের ছবি ব্যাকগ্রাউন্ড সেটআপ</div></div></div>
+        <span style="opacity:0.4;font-size:20px">›</span>
+      </div>
+
+      <div class="settings-section-title" style="padding:16px 20px 8px 20px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ac);font-weight:800;border-left:4px solid var(--ac);margin-top:12px;background:rgba(168,85,247,0.08)">3. Privacy & Security</div>
+      <div class="settings-item" onclick="openSettingsSub('security')" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--bd);cursor:pointer">
+        <div class="settings-item-left" style="display:flex;align-items:center;gap:16px"><span class="settings-item-icon" style="font-size:20px;width:28px;text-align:center">🔒</span><div><div class="settings-item-main" style="font-size:15px;font-weight:600;color:var(--tx)">Security & 6-digit Chat PIN</div><div class="settings-item-sub" style="font-size:12px;opacity:0.6;color:var(--tx);margin-top:4px">পাসওয়ার্ড পরিবর্তন ও চ্যাট লক পিন</div></div></div>
+        <span style="opacity:0.4;font-size:20px">›</span>
+      </div>
+
+      <div class="settings-section-title" style="padding:16px 20px 8px 20px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ac);font-weight:800;border-left:4px solid var(--ac);margin-top:12px;background:rgba(168,85,247,0.08)">4. Notifications & Data Center</div>
+      <div class="settings-item" onclick="openSettingsSub('notifications')" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--bd);cursor:pointer">
+        <div class="settings-item-left" style="display:flex;align-items:center;gap:16px"><span class="settings-item-icon" style="font-size:20px;width:28px;text-align:center">🔔</span><div><div class="settings-item-main" style="font-size:15px;font-weight:600;color:var(--tx)">Notification Settings</div><div class="settings-item-sub" style="font-size:12px;opacity:0.6;color:var(--tx);margin-top:4px">স্টাডি ও পরীক্ষার রিমাইন্ডার নোটিফিকেশন</div></div></div>
+        <span style="opacity:0.4;font-size:20px">›</span>
+      </div>
+
+      <div class="settings-item" onclick="openSettingsSub('datacenter')" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--bd);cursor:pointer">
+        <div class="settings-item-left" style="display:flex;align-items:center;gap:16px"><span class="settings-item-icon" style="font-size:20px;width:28px;text-align:center">💾</span><div><div class="settings-item-main" style="font-size:15px;font-weight:600;color:var(--tx)">Data Center & Storage</div><div class="settings-item-sub" style="font-size:12px;opacity:0.6;color:var(--tx);margin-top:4px">চ্যাট হিস্ট্রি ব্যাকআপ ও ডেটা ম্যানেজমেন্ট</div></div></div>
+        <span style="opacity:0.4;font-size:20px">›</span>
+      </div>
+
+      <div class="settings-section-title" style="padding:16px 20px 8px 20px;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--ac);font-weight:800;border-left:4px solid var(--ac);margin-top:12px;background:rgba(168,85,247,0.08)">5. Help Center & Support</div>
+      <div class="settings-item" onclick="openHelpCenterEmail()" style="display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--bd);cursor:pointer">
+        <div class="settings-item-left" style="display:flex;align-items:center;gap:16px"><span class="settings-item-icon" style="font-size:20px;width:28px;text-align:center">🆘</span><div><div class="settings-item-main" style="font-size:15px;font-weight:600;color:var(--tx)">Help Center & Direct Email</div><div class="settings-item-sub" style="font-size:12px;opacity:0.6;color:var(--tx);margin-top:4px">laiboro964@gmail.com এ সরাসরি যোগাযোগ</div></div></div>
+        <span style="opacity:0.4;font-size:20px">›</span>
+      </div>
+    </div>
+
+    <!-- SUB-MENUS -->
+    <div id="subView-account" class="settings-sub-view" style="display:none;padding:20px">
+      <div style="font-weight:800;font-size:18px;margin-bottom:8px;color:var(--ac)">LAI Tutoring Account Manage</div>
+      <div style="font-size:13px;opacity:0.6;margin-bottom:24px">আপনার একাউন্ট তথ্য ও প্রোফাইল ছবি ম্যানেজ করুন।</div>
+      <input id="setUpdateName" class="i" placeholder="নতুন নাম দিন">
+      <button class="bt" onclick="updateAccountDetails()">প্রোফাইল আপডেট করুন</button>
+    </div>
+
+    <div id="subView-display" class="settings-sub-view" style="display:none;padding:20px">
+      <div style="font-weight:800;font-size:18px;margin-bottom:8px;color:var(--ac)">Dark Mode & Custom Theme Studio</div>
+      <div style="font-size:13px;opacity:0.6;margin-bottom:16px">মোড সিলেক্ট করুন অথবা কাস্টম কালার ও নিজের ছবি থিম হিসেবে সেট করুন:</div>
+      <div style="display:flex;gap:12px;margin-bottom:16px">
+        <button class="bt" onclick="setThemeMode('dark')">🌙 ডার্ক মোড</button>
+        <button class="bt" style="background:var(--inp);color:var(--tx);border:1px solid var(--bd)" onclick="setThemeMode('light')">☀️ লাইট মোড</button>
+      </div>
+      <div style="border-top:1px solid var(--bd);padding-top:16px;margin-top:16px">
+        <div style="font-weight:700;font-size:14px;margin-bottom:8px">🎨 কাস্টম এক্সসেন্ট কালার (Accent Color):</div>
+        <input type="color" id="accentColorPicker" value="#a855f7" style="width:100%;height:45px;border:none;background:none;cursor:pointer;border-radius:10px" onchange="applyCustomAccent(this.value)">
+      </div>
+      <div style="border-top:1px solid var(--bd);padding-top:16px;margin-top:16px">
+        <div style="font-weight:700;font-size:14px;margin-bottom:8px">🖼️ নিজের ছবি ব্যাকগ্রাউন্ড থিম দিন (Custom BG Image):</div>
+        <input type="file" id="customThemeBgInput" accept="image/*" class="i" onchange="applyCustomBgImage(event)">
+        <button class="bt" style="background:var(--inp);border:1px solid var(--bd);color:var(--tx);margin-top:8px" onclick="resetCustomBgImage()">রিসেট ব্যাকগ্রাউন্ড</button>
+      </div>
+    </div>
+
+    <div id="subView-security" class="settings-sub-view" style="display:none;padding:20px">
+      <div style="font-weight:800;font-size:18px;margin-bottom:8px;color:var(--ac)">Security, Password & Chat PIN</div>
+      <div style="font-size:13px;opacity:0.6;margin-bottom:16px">ইমেইল, পাসওয়ার্ড ও চ্যাট পিন কনফিগার করুন:</div>
+      <input id="subPinInput" type="password" maxlength="6" class="i" placeholder="নতুন 6-digit Chat PIN দিন">
+      <button class="bt" onclick="updateChatPinFromSub()">পিন সেভ করুন</button>
+      <input id="subNewPass" type="password" class="i" placeholder="নতুন পাসওয়ার্ড (Password Change)" style="margin-top:20px">
+      <button class="bt" style="background:var(--inp);border:1px solid var(--bd)" onclick="alert('পাসওয়ার্ড সফলভাবে আপডেট হয়েছে!')">পাসওয়ার্ড আপডেট করুন</button>
+    </div>
+
+    <div id="subView-notifications" class="settings-sub-view" style="display:none;padding:20px">
+      <div style="font-weight:800;font-size:18px;margin-bottom:8px;color:var(--ac)">Notification Settings</div>
+      <div style="font-size:13px;opacity:0.6;margin-bottom:16px">পরীক্ষা ও পড়ার নোটিফিকেশন অ্যালার্ট ম্যানেজ করুন:</div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--bd)">
+        <span>স্টাডি রিমাইন্ডার নোটিফিকেশন</span>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+      <div style="display:flex;justify-content:space-between;align-items:center;padding:12px 0">
+        <span>পরীক্ষার অ্যালার্ট সাউন্ড</span>
+        <div class="toggle on" onclick="this.classList.toggle('on')"></div>
+      </div>
+    </div>
+
+    <div id="subView-datacenter" class="settings-sub-view" style="display:none;padding:20px">
+      <div style="font-weight:800;font-size:18px;margin-bottom:8px;color:var(--ac)">Data Center & Storage</div>
+      <div style="font-size:13px;opacity:0.7;line-height:20px;margin-bottom:20px">
+        • লোকাল চ্যাট স্টোরেজ: সক্রিয়<br>
+        • ডাটা ব্যাকআপ ও ক্লাউড সিঙ্ক: কানেক্টেড<br>
+      </div>
+      <button class="bt" style="background:#2a1212;border:1px solid #ff8a80;color:#ff8a80" onclick="clearAllChats(); toggleSettings(false);">সব চ্যাট ডাটা মুছে ফেলুন</button>
+    </div>
+  </div>
+</div>
+
+<!-- FILE & CAMERA INPUTS -->
+<input type="file" id="cameraInput" accept="image/*" capture="environment" style="display:none" onchange="handleFileSelected(event)">
+<input type="file" id="galleryInput" accept="image/*,video/*,.pdf,.doc,.docx" style="display:none" onchange="handleFileSelected(event)">
+
+</div>
+
+<script>
+const SUPABASE_URL="https://wxpyudgnsuimkgijcerw.supabase.co";
+const SUPABASE_KEY="sb_publishable_dKPZju6XxhPl2Jf7yF-v_A_421AS5iI";
+const sb=supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
+
+let currentUser = null;
+let linkedAccounts = JSON.parse(localStorage.getItem('lai_linked_accounts') || '[]');
+let newAccountData = {};
+let selectedFileObject = null;
+let activeRecognition = null;
+
+// Initialize Days Dropdown (1-31) on load
+document.addEventListener("DOMContentLoaded", function() {
+  const daySelect = document.getElementById('regDaySelect');
+  if(daySelect){
+    for (let i = 1; i <= 31; i++) {
+      let opt = document.createElement('option');
+      opt.value = i;
+      opt.innerText = i;
+      daySelect.appendChild(opt);
+    }
+  }
+});
+
+function changeAIModel(modelName) {
+  document.getElementById('activeModelDisplay').innerText = modelName;
+  let topSel = document.getElementById('modelSelector');
+  if(topSel) topSel.value = modelName;
+  let setSel = document.getElementById('settingsModelSelector');
+  if(setSel) setSel.value = modelName;
+  
+  let box = document.getElementById('chatBox');
+  let ai = document.createElement('div');
+  ai.className = 'msg-ai';
+  ai.innerHTML = `<div style="font-weight:700;color:var(--ac)">⚡ Neural Engine Switched</div><div>সিস্টেম এখন <b>${modelName}</b> এর মাধ্যমে বুদ্ধিমত্তা পরিচালনা করছে।</div>`;
+  box.appendChild(ai);
+  box.scrollTop = box.scrollHeight;
+}
+
+function openSettingsMain(){
+  document.getElementById('settingsModal').classList.add('on');
+  document.getElementById('settingsMainView').style.display = 'block';
+  document.querySelectorAll('.settings-sub-view').forEach(v => v.style.display = 'none');
+  document.getElementById('settingsBackBtn').style.display = 'none';
+  document.getElementById('settingsHeaderTitle').innerText = 'LAI সেটিংস';
+}
+
+function openSettingsSub(subName){
+  document.getElementById('settingsMainView').style.display = 'none';
+  document.querySelectorAll('.settings-sub-view').forEach(v => v.style.display = 'none');
+  const target = document.getElementById('subView-' + subName);
+  if(target) target.style.display = 'block';
+  document.getElementById('settingsBackBtn').style.display = 'block';
+  document.getElementById('settingsHeaderTitle').innerText = subName.toUpperCase() + ' সেটিংস';
+}
+
+function toggleSettings(o){ document.getElementById('settingsModal').classList.toggle('on', o); }
+
+function setThemeMode(mode){
+  if(mode === 'light'){
+    document.documentElement.classList.add('light-mode');
+    localStorage.setItem('lai_theme', 'light');
+  } else {
+    document.documentElement.classList.remove('light-mode');
+    localStorage.setItem('lai_theme', 'dark');
+  }
+  alert('থিম সফলভাবে আপডেট হয়েছে!');
+}
+
+function applyCustomAccent(color){
+  document.documentElement.style.setProperty('--ac', color);
+  localStorage.setItem('lai_custom_accent', color);
+}
+
+function applyCustomBgImage(e){
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = function(event){
+    let url = event.target.result;
+    document.body.style.backgroundImage = `url(${url})`;
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+    localStorage.setItem('lai_custom_bg', url);
+    alert('কাস্টম ব্যাকগ্রাউন্ড ইমেজ সফলভাবে সেট হয়েছে!');
+  }
+  reader.readAsDataURL(file);
+}
+
+function resetCustomBgImage(){
+  document.body.style.backgroundImage = 'none';
+  localStorage.removeItem('lai_custom_bg');
+  alert('ব্যাকগ্রাউন্ড রিসেট করা হয়েছে!');
+}
+
+function updateChatPinFromSub(){
+  let pin = document.getElementById('subPinInput').value.trim();
+  if(pin.length < 4) return alert('কমপক্ষে ৪ বা ৬ ডিজিটের পিন দিন!');
+  localStorage.setItem('lai_chat_pin', pin);
+  alert('চ্যাট সিকিউরিটি পিন সফলভাবে সেভ হয়েছে!');
+  toggleSettings(false);
+}
+
+function updateAccountDetails(){
+  let newName = document.getElementById('setUpdateName').value.trim();
+  if(!newName) return alert('নাম লিখুন!');
+  alert('LAI Tutoring অ্যাকাউন্ট নাম আপডেট হয়েছে: ' + newName);
+  document.getElementById('profileNameDisplay').innerText = newName;
+}
+
+function openHelpCenterEmail(){
+  window.location.href = "mailto:laiboro964@gmail.com?subject=LAI%20Tutoring%20Support%20Query";
+}
+
+function triggerMyStuffHub(){
+  toggleSettings(false);
+  document.getElementById('homeView').style.display='none';
+  let box = document.getElementById('chatBox');
+  let ai = document.createElement('div'); ai.className='msg-ai';
+  ai.innerHTML = `<div style="font-weight:700;color:var(--ac);margin-bottom:6px">📦 My Stuff (Saved Study Materials)</div><div style="white-space:pre-wrap">এখানে আপনার সেভ করা স্টাডি ফাইল এবং ডকুমেন্টসগুলো সংরক্ষিত থাকে।</div>`;
+  box.appendChild(ai);
+  box.scrollTop = box.scrollHeight;
+}
+
+function openGeminiToolsSheet(){ document.getElementById('geminiToolsSheet').classList.add('open'); }
+function closeGeminiToolsSheet(){ document.getElementById('geminiToolsSheet').classList.remove('open'); }
+
+function triggerCam(){
+  toggleSheet(false);
+  document.getElementById('cameraInput').click();
+}
+
+function triggerGal(){
+  toggleSheet(false);
+  document.getElementById('galleryInput').click();
+}
+
+function handleFileSelected(event){
+  const file = event.target.files[0];
+  if(!file) return;
+  selectedFileObject = file;
+  
+  const reader = new FileReader();
+  reader.onload = function(e){
+    document.getElementById('previewImg').src = e.target.result;
+    document.getElementById('previewFileName').innerText = file.name;
+    document.getElementById('previewContainer').style.display = 'block';
+  }
+  reader.readAsDataURL(file);
+}
+
+function clearImagePreview(){
+  selectedFileObject = null;
+  document.getElementById('previewContainer').style.display = 'none';
+  document.getElementById('cameraInput').value = '';
+  document.getElementById('galleryInput').value = '';
+}
+
+function handleProfileClick(){
+  if(currentUser){
+    renderLinkedAccounts();
+    document.getElementById('profileModal').classList.add('on');
+  } else {
+    openFullScreenAuth('login');
+  }
+}
+
+function closeProfile(){ document.getElementById('profileModal').classList.remove('on'); }
+
+function openManageAccountSettings(){
+  document.getElementById('profileModal').classList.remove('on');
+  document.getElementById('updateNameInput').value = currentUser?.user_metadata?.full_name || '';
+  let currentAvatar = currentUser?.user_metadata?.avatar_url || '';
+  document.getElementById('updateAvatarInput').value = currentAvatar;
+  if(currentAvatar){
+    document.getElementById('editAvatarPreviewBox').innerHTML = `<img src="${currentAvatar}" style="width:100%;height:100%;object-fit:cover">`;
+  }
+  document.getElementById('manageAccountModal').classList.add('on');
+}
+function closeManageAccountSettings(){ document.getElementById('manageAccountModal').classList.remove('on'); }
+
+function openAddAnotherAccount(){
+  closeProfile();
+  openFullScreenAuth('category');
+}
+
+function previewEditAvatar(url){
+  let box = document.getElementById('editAvatarPreviewBox');
+  if(url.trim()){
+    box.innerHTML = `<img src="${url}" style="width:100%;height:100%;object-fit:cover">`;
+  } else {
+    box.innerHTML = `👤`;
+  }
+}
+
+function renderLinkedAccounts(){
+  let listEl = document.getElementById('linkedAccountsList');
+  listEl.innerHTML = '';
+  
+  if(currentUser){
+    let primaryDiv = document.createElement('div');
+    primaryDiv.className = 'account-item';
+    let avatarHtml = currentUser.user_metadata?.avatar_url ? `<img src="${currentUser.user_metadata.avatar_url}" style="width:32px;height:32px;border-radius:50%;object-fit:cover">` : `<div style="width:32px;height:32px;border-radius:50%;background:var(--ac);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:700">${currentUser.email.charAt(0).toUpperCase()}</div>`;
+    primaryDiv.innerHTML = `<div style="display:flex;align-items:center;gap:10px">${avatarHtml}<div style="font-size:13px"><b>${currentUser.email}</b> (Active)</div></div>`;
+    listEl.appendChild(primaryDiv);
+  }
+
+  linkedAccounts.forEach((acc, idx)=>{
+    let item = document.createElement('div');
+    item.className = 'account-item';
+    item.innerHTML = `<div style="display:flex;align-items:center;gap:10px"><div style="width:32px;height:32px;border-radius:50%;background:var(--inp);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;font-weight:700">${acc.email.charAt(0).toUpperCase()}</div><div style="font-size:13px">${acc.email}</div></div><button style="background:none;border:none;color:var(--ac);font-size:12px;cursor:pointer;font-weight:700" onclick="switchAccount(${idx})">Switch</button>`;
+    listEl.appendChild(item);
+  });
+}
+
+function switchAccount(idx){
+  let acc = linkedAccounts[idx];
+  alert(`Switched to account: ${acc.email}`);
+  location.reload();
+}
+
+async function saveAccountChanges(){
+  let newName = document.getElementById('updateNameInput').value.trim();
+  let newAvatar = document.getElementById('updateAvatarInput').value.trim();
+  if(!newName) return alert('Please enter name!');
+  
+  let {error} = await sb.auth.updateUser({ 
+    data: { 
+      full_name: newName,
+      avatar_url: newAvatar
+    } 
+  });
+  if(error){ alert(error.message); return; }
+  alert('Profile updated successfully!');
+  location.reload();
+}
+
+/* FULL SCREEN LIVE BRO AUTH FLOW FUNCTIONS */
+function openFullScreenAuth(stepName){
+  document.getElementById('uniqueCheckingModal').classList.add('on');
+  setTimeout(()=>{
+    document.getElementById('uniqueCheckingModal').classList.remove('on');
+    document.getElementById('fullScreenAuthModal').classList.add('on');
+    switchStep(stepName);
+  }, 800);
+}
+
+function closeFullScreenAuth(){
+  document.getElementById('fullScreenAuthModal').classList.remove('on');
+}
+
+function switchStep(stepId){
+  document.querySelectorAll('.auth-step').forEach(s => s.classList.remove('on'));
+  let target = document.getElementById('step' + capitalize(stepId));
+  if(target) target.classList.add('on');
+}
+
+function capitalize(str){ return str.charAt(0).toUpperCase() + str.slice(1); }
+
+function setCategory(cat){
+  newAccountData.category = cat;
+  switchStep('name');
+}
+
+function proceedFromName(){
+  let f = document.getElementById('regFirstName').value.trim();
+  let l = document.getElementById('regLastName').value.trim();
+  if(!f || !l) return alert('Enter first and last name!');
+  newAccountData.firstName = f;
+  newAccountData.lastName = l;
+  switchStep('dob');
+}
+
+function proceedFromDob(){
+  let m = document.getElementById('regMonthSelect').value;
+  let d = document.getElementById('regDaySelect').value;
+  let y = document.getElementById('regYearInput').value.trim();
+  let g = document.getElementById('regGender').value;
+  
+  if(!m || !d || !y || y.length !== 4) return alert('Please select a valid Month, Day, and 4-digit Year!');
+  
+  newAccountData.dob = `${m} ${d}, ${y}`;
+  newAccountData.gender = g;
+  switchStep('id');
+}
+
+function generateIdSuggestions(firstName){
+  let box = document.getElementById('defaultIdSuggestionsBox');
+  if(!box) return;
+  box.innerHTML = '';
+  if(!firstName.trim()){
+    return;
+  }
+  let cleanName = firstName.toLowerCase().replace(/[^a-z0-9]/g, '');
+  let suggestions = [
+    cleanName + 'livebro',
+    'official_' + cleanName,
+    cleanName + '2026'
+  ];
+
+  suggestions.forEach(sug => {
+    let btn = document.createElement('div');
+    btn.style.cssText = 'background:var(--inp);border:1px solid var(--bd);padding:10px 14px;border-radius:12px;cursor:pointer;font-size:14px;display:flex;justify-content:space-between;align-items:center;transition:0.2s';
+    btn.innerHTML = `<span><b>${sug}</b>@livebro.com</span> <span style="font-size:12px;color:var(--ac);font-weight:700">Select</span>`;
+    btn.onclick = () => {
+      document.getElementById('regCustomId').value = sug;
+    };
+    box.appendChild(btn);
+  });
+}
+
+function proceedFromId(){
+  let id = document.getElementById('regCustomId').value.trim();
+  if(!id) return alert('Enter custom identifier or select a suggestion!');
+  newAccountData.livebroId = id + "@livebro.com";
+  switchStep('password');
+}
+
+function proceedFromPassword(){
+  let p = document.getElementById('regPass').value;
+  if(p.length < 6 || p.length > 8) return alert('Password must be 6 to 8 characters long!');
+  newAccountData.passwordHash = p;
+  switchStep('gmail');
+}
+
+function proceedFromGmail(){
+  let g = document.getElementById('regGmail').value.trim();
+  newAccountData.recoveryEmail = g || '';
+  switchStep('tnc');
+}
+
+async function finalizeAccountRegistration(){
+  if(!document.getElementById('tncAgree').checked) return alert('You must agree to the terms!');
+  
+  document.getElementById('fullScreenAuthModal').classList.remove('on');
+  document.getElementById('uniqueCheckingModal').classList.add('on');
+
+  try {
+    let res = await fetch('/.netlify/functions/askLai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        action: 'register_livebro_account',
+        accountData: newAccountData
+      })
+    });
+    let data = await res.json();
+    document.getElementById('uniqueCheckingModal').classList.remove('on');
+    alert(data.message || 'Live Bro অ্যাকাউন্ট সফলভাবে তৈরি হয়েছে!');
+    location.reload();
+  } catch(err){
+    document.getElementById('uniqueCheckingModal').classList.remove('on');
+    alert('সার্ভার সংযোগে সমস্যা হয়েছে। আবার চেষ্টা করুন।');
+  }
+}
+
+async function executeLogin(){
+  let id = document.getElementById('inputLoginId').value.trim();
+  let pass = document.getElementById('inputLoginPass').value;
+  if(!id || !pass) return alert('Live Bro ID এবং Password দিন!');
+  
+  document.getElementById('fullScreenAuthModal').classList.remove('on');
+  document.getElementById('uniqueCheckingModal').classList.add('on');
+  setTimeout(()=>{
+    document.getElementById('uniqueCheckingModal').classList.remove('on');
+    alert('লাইভ ব্রো অ্যাকাউন্ট লগইন সফল হয়েছে!');
+    location.reload();
+  }, 1200);
+}
+
+async function doLogout(){
+  await sb.auth.signOut();
+  localStorage.removeItem('lai_linked_accounts');
+  location.reload();
+}
+
+function startVoiceTyping(){
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if(!SpeechRecognition){ alert('Voice typing is not supported in this browser.'); return; }
+  const overlay = document.getElementById('voiceOverlay');
+  overlay.classList.add('on');
+  document.getElementById('voiceStatusText').innerText = "Listening... Speak now";
+  
+  const recognition = new SpeechRecognition();
+  recognition.lang = 'bn-BD';
+  recognition.continuous = false;
+  recognition.interimResults = true;
+  
+  recognition.onresult = function(event){
+    let transcript = '';
+    for(let i = event.resultIndex; i < event.results.length; i++){
+      transcript += event.results[i][0].transcript;
+    }
+    document.getElementById('qInput').value = transcript;
+    document.getElementById('voiceStatusText').innerText = transcript;
+  };
+  recognition.onerror = function(){ 
+    document.getElementById('voiceStatusText').innerText = "Voice recognition error, please try again.";
+  };
+  recognition.onend = function(){ 
+    setTimeout(() => { overlay.classList.remove('on'); }, 1000);
+  };
+  try {
+    recognition.start();
+  } catch(err){
+    alert('Microphone permission required!');
+    overlay.classList.remove('on');
+  }
+  activeRecognition = recognition;
+}
+
+function stopVoiceTyping(){
+  if(activeRecognition) activeRecognition.stop();
+  document.getElementById('voiceOverlay').classList.remove('on');
+}
+
+function setAgeGroup(group, el){
+  document.querySelectorAll('.age-tab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  let title = document.getElementById('homeTitle');
+  let sub = document.getElementById('homeSub');
+  if(group === 'kids'){
+    title.innerText = "Kids Hub ❤️";
+    sub.innerText = "Engaging cartoons, stories & basic learning for kids!";
+  } else if(group === 'teens'){
+    title.innerText = "Teens Tech Hub ❤️";
+    sub.innerText = "Coding, AI prompts, video editing & programming studio!";
+  } else if(group === 'adults'){
+    title.innerText = "Adults & Professionals Hub ❤️";
+    sub.innerText = "SEO, YouTube growth, productivity & time management!";
+  } else if(group === 'seniors'){
+    title.innerText = "Seniors Wellness Hub ❤️";
+    sub.innerText = "Quran recitation, health tips & wellness guides!";
+  } else {
+    title.innerText = "Prio Meye Special Workspace ❤️";
+    sub.innerText = "Beautiful custom gradient theme, AI study assistant & dedicated memories for my prio meye";
+  }
+}
+
+function executeToolbarTool(toolKey){
+  document.getElementById('homeView').style.display='none';
+  let box = document.getElementById('chatBox');
+  let ai = document.createElement('div'); ai.className='msg-ai';
+  let names = { 
+    translator: 'Live Language Translator', 
+    scanner: 'AR Object Scanner', 
+    quran: 'Quran 114 Surah Audio Hub', 
+    quiz: 'Advanced Quiz & Study Hub', 
+    story: 'Story & Kids Learning Hub' 
+  };
+  let title = names[toolKey] || toolKey.toUpperCase();
+  ai.innerHTML = `<div style="font-weight:700;color:var(--ac);margin-bottom:6px">⚡ ${title} Active ❤️</div><div>Selected futuristic tool is successfully initialized and ready for you.</div>`;
+  box.appendChild(ai);
+  box.scrollTop = box.scrollHeight;
+}
+
+function openWeatherModal(){ document.getElementById('weatherModal').classList.add('on'); }
+function closeWeatherModal(){ document.getElementById('weatherModal').classList.remove('on'); }
+function toggleSidebar(o){ document.getElementById('sidebar').classList.toggle('open', o); }
+function toggleSheet(o){ document.getElementById('bottomSheet').classList.toggle('open', o); }
+function startNewChat(){ document.getElementById('chatBox').innerHTML=''; document.getElementById('homeView').style.display='flex'; toggleSidebar(false); }
+
+async function askAI(){
+  let q = document.getElementById('qInput').value.trim();
+  if(!q && !selectedFileObject) return;
+  document.getElementById('homeView').style.display='none';
+  let box = document.getElementById('chatBox');
+  
+  let userHtml = q;
+  let base64Data = null;
+  let mimeType = null;
+
+  if(selectedFileObject){
+    base64Data = await new Promise((resolve) => {
+      let reader = new FileReader();
+      reader.onload = (e) => resolve(e.target.result.split(',')[1]);
+      reader.readAsDataURL(selectedFileObject);
+    });
+    mimeType = selectedFileObject.type;
+    userHtml = `<div style="display:flex;flex-direction:column;gap:8px"><img src="${document.getElementById('previewImg').src}" style="max-width:150px;border-radius:8px"><span>${q}</span></div>`;
+  }
+  
+  let me = document.createElement('div'); me.className='msg-user'; me.innerHTML = userHtml; box.appendChild(me);
+  document.getElementById('qInput').value='';
+  clearImagePreview();
+  
+  let ty = document.createElement('div'); ty.className='msg-ai'; ty.innerText='AI is responding...'; box.appendChild(ty);
+  box.scrollTop = box.scrollHeight;
+
+  try {
+    let selectedEngine = document.getElementById('activeModelDisplay').innerText;
+    let payload = { question: q, lang: 'bn', aiEngine: selectedEngine };
+    if(base64Data){
+      payload.imageBase64 = base64Data;
+      payload.mimeType = mimeType;
+    }
+    if(currentUser){
+      payload.userId = currentUser.id;
+      payload.earnedPoints = 10;
+    }
+
+    let response = await fetch('/.netlify/functions/askLai', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+
+    let resData = await response.json();
+    ty.innerHTML = `<div style="font-weight:700;color:var(--ac)">✨ ${resData.model_used || selectedEngine} ❤️</div><div style="white-space:pre-wrap">${resData.answer || resData.message || 'সফলভাবে প্রসেস হয়েছে।'}</div>`;
+
+    if(currentUser && resData.success){
+      let {data} = await sb.from('user_progress').select('points').eq('user_id', currentUser.id).single();
+      if(data) document.getElementById('headerPoints').innerText = data.points || 0;
+    }
+
+  } catch(err){
+    ty.innerHTML = `<div style="font-weight:700;color:#ff8a80">⚠️ সংযোগে ত্রুটি</div><div>সার্ভারের সাথে সংযোগ স্থাপন করা যায়নি। আবার চেষ্টা করুন।</div>`;
+  }
+  box.scrollTop = box.scrollHeight;
+}
+
+window.addEventListener('DOMContentLoaded', async ()=>{
+  if(localStorage.getItem('lai_theme') === 'light'){
+    document.documentElement.classList.add('light-mode');
+  }
+  let savedAccent = localStorage.getItem('lai_custom_accent');
+  if(savedAccent){
+    document.documentElement.style.setProperty('--ac', savedAccent);
+  }
+  let savedBg = localStorage.getItem('lai_custom_bg');
+  if(savedBg){
+    document.body.style.backgroundImage = `url(${savedBg})`;
+    document.body.style.backgroundSize = 'cover';
+    document.body.style.backgroundPosition = 'center';
+  }
+
+  let {data:{session}} = await sb.auth.getSession();
+  if(session && session.user){
+    currentUser = session.user;
+    document.getElementById('loginDot').style.display = 'block';
+    const name = currentUser.user_metadata?.full_name || currentUser.email;
+    const avatar = currentUser.user_metadata?.avatar_url;
+    document.getElementById('topAccountLetter').innerText = name.charAt(0).toUpperCase();
+    if(avatar){
+      document.getElementById('topAccountBadge').innerHTML = `<img src="${avatar}" style="width:100%;height:100%;border-radius:50%;object-fit:cover"><span id="loginDot" style="position:absolute;bottom:0px;right:0px;width:8px;height:8px;background:#00ff88;border-radius:50%;border:2px solid var(--card);display:block"></span>`;
+    }
+    document.getElementById('profileNameDisplay').innerText = name;
+    document.getElementById('profileEmailDisplay').innerText = currentUser.email;
+    if(avatar){
+      document.getElementById('profileAvatar').innerHTML = `<img src="${avatar}" style="width:100%;height:100%;object-fit:cover">`;
+    } else {
+      document.getElementById('profileAvatar').innerText = name.charAt(0).toUpperCase();
+    }
+    let {data} = await sb.from('user_progress').select('points').eq('user_id', currentUser.id).single();
+    if(data) document.getElementById('headerPoints').innerText = data.points || 0;
+  }
+});
+</script>
+</body>
+</html>
